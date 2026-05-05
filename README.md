@@ -8,6 +8,10 @@ El sistema genera llamadas sintéticas con un LLM, las clasifica automáticament
 
 ## Setup
 
+### Requisitos
+
+- **Python 3.10+** (el código usa sintaxis PEP 604: `str | None`). Probado con 3.13.
+
 ### 1. Crear y activar entorno virtual
 
 ```bash
@@ -57,6 +61,20 @@ Arranca generador, clasificador y motor de métricas como procesos separados. Ca
 ```bash
 python main.py --mode stream --n 30
 ```
+
+### Saltearse el generador con llamadas externas
+
+Si ya tenés llamadas generadas (un `.jsonl` o `.json` con `CallRecord` válidos), podés saltearte el módulo 1 y avanzar directo al clasificador y métricas con `--input-calls`:
+
+```bash
+# Modo batch sobre un archivo externo
+python main.py --mode batch --input-calls path/to/mis_llamadas.jsonl
+
+# Modo stream sobre un archivo externo (el clasificador hace tail-follow)
+python main.py --mode stream --input-calls path/to/mis_llamadas.jsonl
+```
+
+Cuando se pasa `--input-calls`, el flag `--n` se ignora y el generador no se ejecuta. El archivo debe contener `CallRecord` que validen contra el schema en `shared/models.py` (mismo formato que `data/calls_seed.json` o `data/generated_calls.jsonl`).
 
 Luego, en otra terminal, abrir el dashboard:
 
